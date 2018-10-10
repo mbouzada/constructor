@@ -1,0 +1,209 @@
+#!/bin/bash
+
+case $LANG in
+  ca*)
+    TITLE1="Selector d'Instal·lador"
+    TEXT1="Escull el model d'Instal·lació 
+
+    El mode <b>desatès</b>és el recomanat per 
+    els més inexperts. 
+    Aquest mode té dues variants: 
+        Automática: És la més senzilla. 
+                    Ocupa tot el disc 
+        Manual: Permet triar la partició de la 
+				instal·lació.
+    No permet configurar cap paràmetre. 
+
+    El mode <b>bàsic</b> permet ajustar alguns 
+    paràmetres, recorda a l'instal·lador de Debian. 
+    Permet escollir el disc destí i instal·lar la 
+	partició <i>/home </i> separada, però no permet 
+	configurar usuaris. 
+
+	<b>Molt important</b> 
+	Recorda que el nom d'usuari i la contrasenya 
+	predeterminats són <b>minino</b>. 
+
+    El mode <b>avançat</b> és molt senzill, 
+    permet configurar l'usuari i contrasenya. 
+    L'arrencada el posa sempre al MBR del 
+    primer disc (sda).
+
+    El mode <b>expert</b> està indicat només per 
+    usuaris amb experiència en la configuració 
+    de múltiples particions. 
+    Permet definir gairebé tots els paràmetres. "
+    UNASSISTED="desatès"
+    BASIC="Bàsic"
+    ADVANCED="Avançat"
+    EXPERT="Expert"
+    ;;
+  es*)
+    TITLE1="Selector de instalador"
+    TEXT1="Escoja el modo de instalación 
+
+	El modo <b>desasistido</b> es el recomendado para  
+	los más inexpertos. 
+	Este modo tiene dos variantes: 
+		Automática:	Es la más sencilla. 
+					Ocupa todo el disco 
+		Manual:	Nos permite elegir la partición en la 
+				que queremos hacer la instalación. 
+	No permite configurar ningún parámetro. 
+
+	El modo <b>básico</b> nos permite ajustar algunos 
+	parámetros, nos recuerda al instalador de Debian. 
+	Permite escoger el disco de destino e instalar la 
+	partición <i>/home</i> separada, pero no permite 
+	configurar usuarios.  
+
+	<b>Muy importante</b> 
+	Recuerde que el usuario y la contraseña 
+	predeterminados son <b>minino</b>. 
+
+	El modo <b>avanzado</b> es muy sencillo, nos 
+	permite configurar el usuario y su contraseña. 
+	El arranque lo pone siempre en el MBR del 
+	primer disco (sda). 
+
+	El modo <b>experto</b> está indicado solo para 
+	usuarios con experiencia en la configuración 
+	de múltiples particiones "
+	UNASSISTED="Desasistido"
+    BASIC="Básico"
+    ADVANCED="Avanzado"
+	EXPERT="Experto"
+    ;;
+  eu*)
+	TITLE1="Instalatzailearen hautatzailea"
+	TEXT1="Instalatzeko modua hauta ezazu 
+
+	<b>Ardura gabeko</b> modua hasiberrientzat 
+	egokiena da. 
+    Modu honek baditu bi era: 
+        Automatikoa: Errezena, baina 
+                     Disko osoa hartzen du. 
+        Eskuzkoa: Instalatzeko partizio helburua 
+                  hautatzeko aukera ematen digu. 
+	Ez du parametro gehiagorik hautatzeko aukera ematen. 
+ 
+	<b>Oinarrizko</b> moduak zenbait parametro doitzeko 
+	aukera ematen digu, Debian antzerako modua da. 
+	Helburu diskoa hautatzeko aukera ematen du eta 
+	<i>/home</i> partizioa banaturik instalatzea, baina 
+	ez ditu erabiltzaileak konfiguratzeko aukera ematen.
+ 
+	<b>Oso garrantzitsua</b> 
+    Gogora ezazu erabiltzaile eta pasahitz 
+    aurrezarriak direla <b>minino</b>. 
+
+	Modu <b>aurreratua</b> oso erraza da, erabiltzailea 
+	eta pasahitza konfiguratzeko aukera ematen digu. 
+	Hasierarazlea lehenengo diskoko MBRan jartzen du 
+	beti (sda). 
+
+	<b>Aditu</b> modua partizio anitz konfiguratzeko 
+	erraztasuna duten erabiltzaileentzat gomenduta 
+	dago soilik."
+	UNASSISTED="Ardura gabekoa"
+	BASIC="Oinarrizkoa"
+	ADVANCED="Aurreratua"
+	EXPERT="Aditua"
+	;;
+  gl*)
+    TITLE1="Selector de instalador"
+    TEXT1="Escolla o modo de instalación 
+	O modo <b>desasistido</b> é o recomendado para 
+	os máis	inexpertos. 
+	Este modo ten duas variantes: 
+		Automática:	É a mais sinxela. 
+					Ocupa todo o disco. 
+		Manual:	Permítenos escoller a partición na 
+				que queremos facer a instalación. 
+	Non permite configurar ningún parámetro. 
+
+	O modo <b>básico</b> permítenos axustar algúns 
+	parámetros, lembra ao instalador de Debian. 
+	Permite escoller o disco de destino e instalar a 
+	partición /home separada, mais non 	permite 
+	configurar usuarios.  
+
+	<b>Moi importante</b> 
+	Lembre que o usuario e o contrasinal 
+	predeterminados son <b>minino<b/>. 
+
+	O modo <b>avanzado</b> é moi sinxelo, permítenos 
+	configurar o usuario e o seu contrasinal. 
+	O arrinque pono siempre no MBR do primeiro disco 
+	(sda). 
+
+	O modo <b>experto</b> está indicado só para 
+	usuarios con experiencia na configuración de 
+	múltiples particións. 
+	Permítenos definis case todos os parámetros. "
+	UNASSISTED="Desasistido"
+    BASIC="Básico"
+    ADVANCED="Avanzado"
+	EXPERT="Experto"
+    ;;
+  *)
+    TITLE1="Installer selector"
+    TEXT1="Choose the instalation mode
+
+    The <b>unattended</b> mode is recommended for 
+    newbies.
+    This mode has two variants:
+        Auto:    It is the easiest.
+                 It will erase the whole hard disk.
+        Manual:  It allows us to choose the partition 
+                 want to do the installation.
+    It doesn't let you set any aditional parameter.
+
+    The <b>basic</b> mode allows us to adjust some 
+    parameters, reminds us of the Debian installer. 
+    It allows you to choose the destination disk and a 
+	separated <i>/home</i> partition, but it doesn't 
+	allow you to set users. 
+
+    <b>Very important</b> 
+    Remember that the default password 
+    and user are <b>minino</b>. 
+
+    The <b>advanced</b> mode is simple too, and allow 
+    us to set the user name and password.
+    Boot sector (MBR) will be always in the first disk 
+	(sda). 
+
+    The <b>expert</b> mode is suitable for expert users 
+    who know the partitioning disk.
+    It allows us to define almost any parameter. "
+	UNASSISTED="Unassisted"
+    BASIC="Basic"
+    ADVANCED="Advanced"
+	EXPERT="Expert"
+    ;;
+esac
+
+ICON="minino-installer"
+
+INSTALLER=$(yad --window-icon $ICON --title "$TITLE1" --text "$TEXT1  " \
+                --list --print-column 1 --no-headers --image $ICON \
+                --column "control" --column "accion":tip --hide-column 1 \
+	unassisted "$UNASSISTED" \
+    basic "$BASIC" \
+    advanced "$ADVANCED" \
+	expert "$EXPERT")
+case $INSTALLER in
+	unassisted*)
+	gksu "x-terminal-emulator -e sh -c minino-installer-b"
+    	;;
+    basic*)
+	gksu "x-terminal-emulator -e sh -c remastersys-installer"
+    	;;
+    advanced*)
+        gksu minino-installer-r
+    	;;
+    expert*)
+        gksu refractainstaller-e-wrapper.sh
+    	;;
+esac

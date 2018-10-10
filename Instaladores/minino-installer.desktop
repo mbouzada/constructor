@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Type=Application
+Icon=minino-installer.png
+Name=Minino Installer
+Name[es]=Instalador de Minino
+Name[gl]=Instalador do Minino
+Name[ca]=Instal·lador de Minino
+Comment=Install Minino in your hard drive
+Comment[es]=Instale Minino en su disco rígido
+Comment[gl]=Instale o Minino no seu disco ríxido
+Comment[ca]=Instal·leu Minino en el seu disc dur
+Exec=gksu minino-installer-selector
+Categories=Minino;
+NotShowIn=LXDE;

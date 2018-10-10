@@ -1,0 +1,346 @@
+#!/bin/bash
+
+# Adaptado para «refractasnapshot»
+
+case $LANG in
+	ca*)
+         ECHO = "Has de executar això com «root»"
+         TIT1 = "Avís IMPORTANT"
+         MSG1 = "<span size ='large'><b>Abans de continuar:</b>
+* Esborra la memòria cau/historial dels navegadors.
+* Desactiva, a<b> Menú → preferències → Serveis </b>
+els serveis que no vulguis fer servir com:
+     <Span foreground = 'blue'> cups, rsync rsyslog manualment, tor, </span> etc.
+* Desactiva <b> Blok Núm </b> per evitar problemes en alguns portàtils.
+* Assegura't que la paperera està buida.
+
+No tanquis AQUESTA finestra Fins que ho hagis fet! </span> "
+         TIT2 = "Ajustaments previs"
+         ENT1 = "Nom de l'usuari actual"
+         ENT2 = "Nom de la distro a crear"
+         BUT1 = "Cancel·lar"
+         BUT2 = "Acceptar"
+         MSG2 = "FET!"
+     ;;
+	es*)
+		ECHO="Debe ejecutar esto como «root»"
+		TIT1="Aviso IMPORTANTE"
+		MSG1="<span size='large'><b>Antes de continuar: </b>
+* Borra la caché/historial de los navegadores. 
+* Desactiva, en <b>Menú → Preferencias → Servicios </b>
+  los servicios que no quieras usar al inicio como: 
+	<span foreground='blue'>cups, rsync rsyslog, tor, </span>etc. 
+* Desactiva <b>Blok Núm</b> para evitar problemas en algunos portátiles.
+* Asegurate de que la papelera está vacía.
+
+¡No cierres esta ventana hasta que lo hayas hecho! </span>"
+		TIT2="Ajustes previos"
+		ENT1="Nombre del usuario actual"
+		ENT2="Nombre de la distro a crear"
+		BUT1="Cancelar"
+		BUT2="Aceptar"
+		MSG2="H E C H O !"
+	;;
+	eu*)
+		ECHO="«Erro» bezela exekutatu beharko zenuke"
+		TIT1="Ohar GARRANTZITSUA"
+		MSG1="<span size='large'><b>Jarraitu baino lehen: </b>
+* Nabigatzaileen historiala/katxea ezabatu. 
+* Desaktibatu, <b>Menu → Hobespenak → Zerbitzuak </b>
+hasieran erabili nahi ez dituzun Zerbitzuak, hala nola: 
+	<span foreground='blue'>cups, rsync rsyslog, tor, </span>eta abar. 
+* Desaktibatu <b>Blok Núm</b> zenbait ordenagailu eramangarrietan arazorik  ez izateko.
+* Ziurtatu ezazu karpeta hutsik dagoela. 
+
+Ez ezazu itxi lehio hau dena burutu arte! </span>"
+		TIT2="Aurretiko hobespenak"
+		ENT1="Oraingo erabiltzailearen izena"
+		ENT2="Sortuko den distroaren izena"
+		BUT1="Ezeztatu"
+		BUT2="Onartu"
+		MSG2="B U R U T U T A !"
+	;;
+	gl*)
+		ECHO="Isto ten que executalo como «root»"
+		TIT1="Aviso IMPORTANTE"
+		MSG1="<span size='large'><b>Antes de continuar: </b>
+* Borra a caché/historial dos navegadores. /usr/lib/refractasnapshot/iso/isolinux
+* Desactiva, en <b>Menú → Preferencias → Servizos </b>
+os servizos que non queiras usar no inicio como:
+	<span foreground='blue'>cups, rsync rsyslog, tor, </span>etc. 
+* Desactiva <b>Blok Núm</b> para evitar problemas nalgúns portátiles.
+* Asegurate de que o cesto do lixo está baleiro.
+
+Non peches esta xanela ata que o teñas feito! </span>"
+		TIT2="Axustes previos"
+		ENT1="Nome do usuario actual"
+		ENT2="Nome da distro a crear"
+		BUT1="Cancelar"
+		BUT2="Aceptar"
+		MSG2="F E I T O !"
+	;;
+	*)
+        ECHO="You must run this as «root»"
+        TIT1="IMPORTANT warning"
+        MSG1="<span size='large'><b>Before proceeding: </b>
+* Clean cache/history browsers.
+* Disable startup services in 
+   <b>Menu → Preferences → Services </b>:
+    <span foreground='blue'>cups, rsync rsyslog, tor, </span>etc.
+* Turn off <b>Num Lok</b> for some laptops.
+* Make sure the trash is empty.
+
+Don't close this window until you do all this! </span>"
+        TIT2="Previous settings"
+        ENT1="Current user name"
+        ENT2="Distribution name to be created"
+        BUT1="Cancel"
+        BUT2="OK"
+        MSG2="D O N E !"
+    ;;
+esac
+
+if [[ $EUID -ne 0 ]]; then
+	echo
+	echo "$ECHO" 1>&2
+	echo
+	exit 1
+fi
+
+# Asignamos valor fecha/hora para nombrar ISO
+DATE=$(date +%Y%m%d_%H.%M)
+
+DATOS=$(yad --title="$TIT2" --form \
+	--field="$ENT1" --field-text "minino" \
+	--field="$ENT2" --field-text "minino-queiles-3.0_$DATE" \
+	--button="${BUT1}:1" --button="${BUT2}:0")
+
+if [ $? = 0 ] ; then
+	USUARIO=$(echo "$DATOS" | cut -d"|" -f1)
+	NewName=$(echo "$DATOS" | cut -d"|" -f2)
+else
+	exit 0
+fi
+
+if [ "$USUARIO" = "" ]; then
+	USUARIO="minino"
+#	USUARIO=`pwd | cut -d"/" -f3}'
+fi
+
+if [ "$NewName" = "" ]; then
+	NewName="minino-live_$DATE"
+#	NewName="minino-queiles-3.0_$DATE"
+#	NewName="picaros-adriana_$DATE"
+fi
+
+yad --button="gtk-close" --window-icon="important" --title="${TIT1}" --image="task-due" --text="${MSG1}"
+
+# Limpieza de configuraciones residuales de desinstalaciones
+dpkg --purge `COLUMNS=300 dpkg -l | egrep "^rc" | cut -d' ' -f3`
+#Limpieza de la caché
+apt-get clean
+apt-get autoclean
+
+#descarga=`cat /home/${USUARIO}/.config/user-dirs.dirs |grep DOWNLOAD|cut -d"=" -f2|cut -d"\"" -f2|cut -d"/" -f2`
+
+#if test -e /home/${USUARIO}/${descarga}/update_minino_* ; then
+#         rm /home/${USUARIO}/${descarga}/update_minino_*
+#fi
+
+
+#[ES]
+# Si se quiere hacer una ISO con solo el núcleo de la máquina anfitriona,
+# comentar todo el bloque acotado:
+#[EN]
+# If you want to make an ISO with just the kernel of the host machine,
+# Comment the entire block bounded:
+
+#*************************************************************************************
+
+## Bloque de instalación con los dos núcleos
+## Block installation with two kernels
+
+#RefNucleo=`uname -r | awk -F"-" '{print $3}'` # v.g "586"
+#BaseNucleo=`uname -r | awk -F"-" '{print $1,$2}' | sed "s/ /-/"` # v.g. "3.2.0-4"
+
+#apt-get update -q
+#case $RefNucleo in
+#	686)
+#		export DEBIAN_FRONTEND=noninteractive
+#		yes '' | apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" linux-image-${BaseNucleo}-586
+#		update-initramfs -t -c -k ${BaseNucleo}-586
+#	;;
+#	586)
+#		export DEBIAN_FRONTEND=noninteractive
+#		yes '' | apt-get install -q -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" linux-image-${BaseNucleo}-686-pae
+#		update-initramfs -t -c -k ${BaseNucleo}-686-pae
+#	;;
+#esac++
+
+#cp /boot/vmlinuz*686* /live/vmlinuz
+#cp /boot/initrd.img*686* /live/initrd.img
+
+#cp /boot/vmlinuz*586 /usr/lib/refractasnapshot/iso/isolinux/vmlinuz
+#cp /boot/initrd.img*586* /usr/lib/refractasnapshot/iso/isolinux/initrd.img
+
+## Fin del bloque de instalación con los dos núcleos
+## End of block installation with two kernels
+
+#*************************************************************************************
+
+# Alternativa que hay que probar
+# Es probable que solo sea necesario el enlace de 586
+
+#ln -s /boot/vmlinuz${BaseNucleo}-686-pae /live/vmlinuz
+#ln -s /boot/initrd.img${BaseNucleo}-686-pae /live/initrd.img
+
+#ln -s /boot/vmlinuz${BaseNucleo}-586 /usr/lib/refractasnapshot/iso/isolinux/vmlinuz
+#ln -s /boot/initrd.img${BaseNucleo}-586 /usr/lib/refractasnapshot/iso/isolinux/initrd.img
+
+#*************************************************************************************
+
+
+LIMPIEZA
+
+cd /home/${USUARIO}
+rm .bash_history
+rm .xsession-errors
+rm .xsession-errors.old
+rm -r .ssh
+rm -r .thumbnails/normal/*
+rm -r .thumbnails/large/*
+rm -r cronopete
+rm .mozilla/plugins/laller-b 
+minino@minino:~$ ibflashplayer.so-OLD
+rm .cache/*
+rm -r .cache/mc
+rm -r .cache/menus
+rm -r .cache/openbox
+
+# En previsión de una ejecución de smplayer
+# que deja en «Imágenes» una carpeta
+case $LANG in
+	ca*)
+		IMG="Imatges"
+		;;
+	es*)
+		IMG="Imágenes"
+		;;
+	eu*)
+		IMG="Irudiak"
+		;;
+	gl*)
+		IMG="Imaxes"
+		;;
+	*)
+		IMG="Pictures"
+		;;
+esac
+
+rm -r ~/$IMG/*
+
+cd /root
+rm .bash_history
+rm .xsession-errors
+rm .xsession-errors.old
+rm -r .ssh
+rm -r .thumbnails/normal/*
+rm -r .thumanils/large/*
+
+cd /etc/skel/
+rm .mozilla/plugins/libflashplayer.so-OLD
+
+cd /var
+rm lib/NetworkManager/timestamps
+rm lib/NetworkManager/seen-bssids
+rm -r cache/flashplugin-nonfree
+rm -r lib/apt/lists/*
+rm -r log/apt
+rm -r log/lightdm
+
+cd /
+rm *.old
+rm -r tmp/*
+
+rm /etc/NetworkManager/system-connections/*
+rm -r /usr/share/doc/*
+rm -r /usr/share/locale/ru
+
+find /var/log -type f -delete
+
+export DEBIAN_FRONTEND=noninteractive
+yes '' | localepurge
+
+apt-get -y --force-yes autoremove
+apt-get -y --force-yes clean
+apt-get -y --force-yes autoclean
+
+
+
+cd /usr/lib/refractasnapshot/iso/isolinux/
+iconv -f utf8 -t cp437 isolinux.conf >isolinux.cfg
+iconv -f utf8 -t cp437 menu_es.conf >menu_es.cfg
+iconv -f utf8 -t cp437 menu_gl.conf >menu_gl.cfg
+iconv -f utf8 -t cp437 menu_ca.conf >menu_ca.cfg
+iconv -f utf8 -t cp437 menu_eu.conf >menu_eu.cfg
+iconv -f utf8 -t cp437 menu_en.conf >menu_en.cfg
+cd
+
+# Actualizamos SKEL
+remastersys-skelcopy $USUARIO
+
+# Corregir una posible modificación de la ejecución de Gparted y/o Synaptic
+# por una instalación anterior con refractainstaler
+#TEST1=`cat /usr/share/applications/synaptic.desktop | grep Exec | cut -d"=" -f2`
+#TEST2=`cat /usr/share/applications/gparted.desktop | grep Exec | cut -d"=" -f2`
+#if [[ "&TEST1" == "synaptic-pkexec" || "&TEST2" == "gparted-pkexec" ]] ; then
+#	sed -i -e 's/gksu synaptic/synaptic-pkexec/g' /usr/share/applications/synaptic.desktop
+#	sed -i -e 's/gksu gparted/gparted-pkexec/g' /usr/share/applications/gparted.desktop
+#fi 
+
+lista=`find /usr/bin/ -name *-pkexec`
+for i in $lista
+do
+	sed -i -e 's/gksu/pkexec/g' $i
+done
+
+# PREPARAR minino-installer.desktop PARA QUE APAREZCA EN EL MENÚ «Otros»
+sed -i -e 's/NotShowIn=LXDE;/#NotShowIn=LXDE;/g' /usr/local/share/applications/minino/minino-installer.desktop
+
+###COPIAR ICONO AL ESCRITORIO
+#escritorio=`cat /home/${USUARIO}/.config/user-dirs.dirs |grep DESKTOP|cut -d"=" -f2|cut -d"\"" -f2|cut -d"/" -f2`
+#cp /usr/local/share/applications/minino/minino-installer.desktop /home/${USUARIO}/${escritorio}/
+
+# Limpiar los archivos de una generación anterior
+rm /home/snapshot/*
+
+
+#*******************************
+
+# Generar la ISO
+refractasnapshot
+
+#*******************************
+
+#DEVOLVER minino-installer.desktop a su forma «normal»
+sed -i -e 's/#NotShowIn=LXDE;/NotShowIn=LXDE;/g' /usr/local/share/applications/minino/minino-installer.desktop
+
+#rm /home/${USUARIO}/${escritorio}/minino-installer.desktop
+
+
+# Renombrar ficheros finales
+cd /home/snapshot/
+mv snapshot-????????_????.iso ${NewName}.iso
+mv snapshot-????????_????.iso.md5 ${NewName}.iso.md5
+sed -i -e 's/snapshot-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9][0-9][0-9][0-9]/'${NewName}'/g' ${NewName}.iso.md5
+# Comprobar las regexp
+#sed -i -e 's/snapshot-(\d{8})_(\d{4})/'${NewName}'/g' ${NewName}.iso.md5
+
+
+cd
+
+
+
+echo
+echo "          $MSG2"
+echo
